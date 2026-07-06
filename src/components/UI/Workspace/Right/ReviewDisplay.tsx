@@ -1,13 +1,34 @@
-import { db } from '@/db'
+'use client'
+
 import { issues, reviews } from '@/db/schema'
-import { eq } from 'drizzle-orm'
+import { IHistoryState } from '@/interfaces/History.interface'
+import { IPersona, TCodeLanguage } from '@/interfaces/Settings.interface'
 import { AlertTriangle, Lightbulb, ShieldAlert, Terminal } from 'lucide-react'
+import { useEffect } from 'react'
 
 interface ReviewProps {
 	reviewId?: string
+	review?: typeof reviews.$inferSelect | null
+	detectedIssues?: typeof issues.$inferSelect[]
+	persona: IPersona
+	addHistory: (historyItem: IHistoryState) => void
 }
 
-export async function ReviewDisplay({ reviewId }: ReviewProps) {
+export function ReviewDisplay({ reviewId, review, detectedIssues, persona, addHistory }: ReviewProps) {
+
+	useEffect(() => {
+		if (reviewId && review) {
+			addHistory({
+				id: reviewId,
+				filePath: review.filePath,
+				Persona: persona,
+				score: review.score,
+				language: review.language as TCodeLanguage,
+				date: new Date()
+			})
+		}
+	}, [reviewId, review, persona, addHistory])
+
 	if (!reviewId) {
 		return (
 			<div className="flex flex-col items-center justify-center flex-1 p-6 text-center">
@@ -21,9 +42,6 @@ export async function ReviewDisplay({ reviewId }: ReviewProps) {
 			</div>
 		)
 	}
-
-	const review = await db.select().from(reviews).where(eq(reviews.id, reviewId)).get()
-	const reviewIssues = await db.select().from(issues).where(eq(issues.reviewId, reviewId)).all()
 
 	if (!review) {
 		return (
@@ -50,22 +68,22 @@ export async function ReviewDisplay({ reviewId }: ReviewProps) {
 
 				<div className="flex flex-col gap-3">
 					<h4 className="text-[10px] font-mono font-semibold text-slate-500 uppercase tracking-wider">
-						Detected Issues ({reviewIssues.length})
+						Detected Issues ({detectedIssues?.length ?? 0})
 					</h4>
 
-					{reviewIssues.length === 0 ? (
+					{(detectedIssues?.length ?? 0) === 0 ? (
 						<div className="text-xs text-slate-500 font-mono py-8 text-center">
 							Perfect! No issues found by this persona.
 						</div>
 					) : (
-						reviewIssues.map((issue) => {
+						detectedIssues?.map((issue) => {
 							const isCritical = issue.severity === 'critical'
 							const isWarning = issue.severity === 'warning'
 
 							return (
 								<div
 									key={issue.id}
-									className={`p-3.5 border rounded-xl flex flex-col gap-2.5 bg-slate-950/20 ${isCritical ? 'border-red-950/60' : isWarning ? 'border-amber-955/60' : 'border-slate-800/60'
+									className={`p-3.5 border rounded-xl flex flex-col gap-2.5 bg-slate-950/20 ${isCritical ? 'border-red-950/60' : isWarning ? 'border-amber-500/60' : 'border-slate-800/60'
 										}`}
 								>
 									<div className="flex items-start justify-between gap-4">

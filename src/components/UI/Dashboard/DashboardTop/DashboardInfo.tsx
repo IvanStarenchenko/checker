@@ -3,7 +3,7 @@ import { LucideIcon } from 'lucide-react'
 interface DashboardInfoProps {
 	name: string
 	info?: string | number
-	stat?: string
+	stat?: string | number
 	icon: LucideIcon
 	color?: string
 }

@@ -1,9 +1,9 @@
 import { analyzeCodeAction } from '@/app/actions/review'
+import { useHistoryStore } from '@/store/useHistoryStore'
 import { useSettingsStore } from '@/store/useSettingsStore'
 import { Search, Shield, Sparkles, Zap } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-
 
 const iconMap: Record<string, any> = {
 	'nitpicker-senior': Search,
@@ -17,6 +17,7 @@ export function useReviewDisplay({ code }: { code: string }) {
 	const [isOpen, setIsOpen] = useState(false)
 
 	const { persona, codeLanguage, setPersona } = useSettingsStore()
+	const { addHistory } = useHistoryStore()
 
 	const TriggerIcon = iconMap[persona.id] || Search
 
@@ -26,7 +27,7 @@ export function useReviewDisplay({ code }: { code: string }) {
 		const result = await analyzeCodeAction({
 			code,
 			language: codeLanguage,
-			personaId: persona.id,
+			persona: persona,
 			filePath: 'untitled.ts'
 		})
 
