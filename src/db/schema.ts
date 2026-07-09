@@ -1,13 +1,16 @@
 import { SEVERITY_ENUM } from '@/Const/ENUMS'
 import { TCodeLanguage } from '@/interfaces/Settings.interface'
-import { sql } from 'drizzle-orm'
+import { relations, sql } from 'drizzle-orm'
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 export const history = sqliteTable('history', {
 	id: text('id')
 		.primaryKey()
 		.$defaultFn(() => crypto.randomUUID()),
+	reviewId: text('review_id')
+		.notNull()
+		.references(() => reviews.id, { onDelete: 'cascade' }),
 	filePath: text('file_path').notNull(),
-	createdAt: text('created_at')
+	createdAt: integer('created_at')
 		.default(sql`(CURRENT_TIMESTAMP)`)
 		.notNull(),
 	personaId: text('persona_id').notNull(),
@@ -44,3 +47,14 @@ export const issues = sqliteTable('issues', {
 	message: text('message').notNull(),
 	suggestion: text('suggestion').notNull()
 })
+
+export const reviewsRelations = relations(reviews, ({ many }) => ({
+	issues: many(issues)
+}))
+
+export const issuesRelations = relations(issues, ({ one }) => ({
+	review: one(reviews, {
+		fields: [issues.reviewId],
+		references: [reviews.id]
+	})
+}))

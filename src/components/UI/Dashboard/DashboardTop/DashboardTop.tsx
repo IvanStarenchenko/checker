@@ -1,15 +1,11 @@
-'use client'
+
+import { getDashboardStatistics } from '@/services/getDashboardStatistics.service'
 import { BadgeAlert, Code, Terminal, TrendingUp } from 'lucide-react'
-import { useStatInfo } from '../hooks/useStatInfo'
 import { DashboardInfo } from './DashboardInfo'
 
-export function DashboardTop() {
-	const { totalReviews, avgScore, badIssuesCount, topReviews } = useStatInfo()
+export async function DashboardTop() {
+	const { totalReviews, averageScore, lowScoreReviewCount, topReviewScore, topReviewFile, MINIMUM_PASSING_SCORE, MAX_SCORE } = await getDashboardStatistics()
 
-	const bestReview = topReviews[0]
-
-	const topReviewScore = bestReview ? `${bestReview.score}/100` : '0'
-	const topReviewFile = bestReview ? bestReview.filePath : 'No reviews yet'
 
 	return (
 		<div className="grid grid-cols-4 gap-4">
@@ -23,20 +19,22 @@ export function DashboardTop() {
 
 			<DashboardInfo
 				name="Avg. Quality Score"
-				info={avgScore.toFixed(2)}
+				info={averageScore.toFixed(2)}
 				icon={TrendingUp}
 				color="green"
 			/>
 
 			<DashboardInfo
-				name="Critical Issues"
-				info={badIssuesCount}
+				name="Worst Reviews"
+				stat={`Score < ${MINIMUM_PASSING_SCORE}`}
+				info={lowScoreReviewCount}
 				icon={BadgeAlert}
 				color="red"
 			/>
 
 			<DashboardInfo
 				name="Files Reviewed"
+				stat="Total Reviews"
 				info={totalReviews}
 				icon={Terminal}
 				color="yellow"

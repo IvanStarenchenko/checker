@@ -1,4 +1,5 @@
 export const PATH = {
 	DASHBOARD: '/',
-	WORKSPACE: '/workspace'
+	WORKSPACE: '/workspace',
+	HISTORY: '/history'
 }

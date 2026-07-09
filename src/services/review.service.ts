@@ -41,6 +41,7 @@ export async function saveReviewToDatabase(
 
 		tx.insert(history)
 			.values({
+				reviewId: newReview.id,
 				filePath: reviewFilePath,
 				personaId: input.persona.id,
 				language: input.language as TCodeLanguage,

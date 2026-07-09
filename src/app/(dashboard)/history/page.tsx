@@ -1,3 +1,5 @@
+import { History } from '@/components/Screens/HistoryPage'
+
 export default async function HistoryPage() {
-	return <div>page</div>
+	return <div><History /></div>
 }

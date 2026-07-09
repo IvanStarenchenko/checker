@@ -1,6 +1,7 @@
 "use client"
 
-import { data } from "@/Data/Chart.data"
+import { IHistoryState } from '@/interfaces/History.interface'
+import { getChartData } from '@/services/getChartData.service'
 import { TrendingUp } from "lucide-react"
 import {
 	Area,
@@ -13,10 +14,14 @@ import {
 } from "recharts"
 import { SectionTitle } from '../../SectionTitle'
 
+interface DashboardChartProps {
+	totalScorePerMonth: number
+	historyList?: IHistoryState[]
+}
 
+export function DashboardChart({ totalScorePerMonth, historyList }: DashboardChartProps) {
+	const { chartData, firstHistoryEntryDateString } = getChartData(historyList || [])
 
-export function DashboardChart() {
-	const totalScorePerMonth = data.reduce((acc, curr) => acc + curr.score, 0)
 	return (
 		<div>
 			<SectionTitle icon={TrendingUp} name="Code Quality Trend" />
@@ -34,14 +39,14 @@ export function DashboardChart() {
 
 					<div className="flex items-center gap-1.5 text-emerald-500 bg-emerald-500/10 px-2.5 py-1 rounded-md text-xs font-medium">
 						<TrendingUp className="h-3.5 w-3.5" />
-						<span>+{totalScorePerMonth} pts since {data[0].date}</span>
+						<span>+{totalScorePerMonth} pts since {firstHistoryEntryDateString}</span>
 					</div>
 				</div>
 
 				<div className="h-[300px] w-full">
 					<ResponsiveContainer width="100%" height="100%">
 						<AreaChart
-							data={data}
+							data={chartData}
 							margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
 						>
 							<defs>
@@ -71,7 +76,7 @@ export function DashboardChart() {
 								fontSize={12}
 								tickLine={false}
 								axisLine={false}
-								domain={[50, 100]}
+								domain={[0, 100]}
 								tickCount={4}
 							/>
 
