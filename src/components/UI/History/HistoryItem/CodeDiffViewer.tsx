@@ -1,8 +1,8 @@
 "use client"
 
 import { useCopyToClipboard } from '@/hooks/useCopyToClipboard'
-import { Check, Copy } from 'lucide-react'
 import { useState } from 'react'
+import { CopyButton } from '../../CopyButton'
 
 interface CodeDiffViewerProps {
 	codeBefore: string
@@ -32,23 +32,7 @@ export function CodeDiffViewer({ codeBefore, codeAfter }: CodeDiffViewerProps) {
 								Было (До ревью)
 							</span>
 
-							<button
-								onClick={() => copy(codeBefore, 'before')}
-								className="flex items-center gap-1.5 px-2 py-1 rounded bg-slate-950 border border-slate-800 text-[11px] font-sans text-slate-400 hover:text-slate-200 hover:border-slate-700 transition-colors"
-								title="Скопировать исходный код"
-							>
-								{copiedId === 'before' ? (
-									<>
-										<Check className="h-3 w-3 text-emerald-400" />
-										<span className="text-emerald-400 font-medium">Скопировано!</span>
-									</>
-								) : (
-									<>
-										<Copy className="h-3 w-3" />
-										<span>Копировать</span>
-									</>
-								)}
-							</button>
+							<CopyButton copy={copy} codeBefore={codeBefore} codeAfter={codeAfter} copiedId={copiedId} />
 						</div>
 					)}
 					{activeSide === 'after' && (
@@ -72,7 +56,6 @@ export function CodeDiffViewer({ codeBefore, codeAfter }: CodeDiffViewerProps) {
 					: ''
 					}`}
 			>
-				{/* Шапка */}
 				<div className={`px-4 py-2.5 bg-emerald-500/5 border-b border-slate-800 flex items-center transition-all ${activeSide === 'after' ? 'justify-between' : 'justify-center py-4'
 					}`}>
 					{activeSide === 'after' && (
@@ -81,23 +64,7 @@ export function CodeDiffViewer({ codeBefore, codeAfter }: CodeDiffViewerProps) {
 								Стало (После правок)
 							</span>
 
-							<button
-								onClick={() => copy(codeAfter, 'after')}
-								className="flex items-center gap-1.5 px-2 py-1 rounded bg-slate-950 border border-slate-800 text-[11px] font-sans text-slate-400 hover:text-slate-200 hover:border-slate-700 transition-colors"
-								title="Скопировать исправленный код"
-							>
-								{copiedId === 'after' ? (
-									<>
-										<Check className="h-3 w-3 text-emerald-400" />
-										<span className="text-emerald-400 font-medium">Скопировано!</span>
-									</>
-								) : (
-									<>
-										<Copy className="h-3 w-3" />
-										<span>Копировать</span>
-									</>
-								)}
-							</button>
+							<CopyButton copy={copy} codeBefore={codeBefore} codeAfter={codeAfter} copiedId={copiedId} />
 						</div>
 					)}
 					{activeSide === 'before' && (
