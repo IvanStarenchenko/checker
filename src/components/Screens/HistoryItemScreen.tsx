@@ -7,7 +7,7 @@ interface HistoryItemScreenProps {
 export async function HistoryItemScreen({ id }: HistoryItemScreenProps) {
 	return (
 		<div>
-			<HistoryItem id={id} />
+			<HistoryItem reviewId={id} />
 		</div>
 	)
 }

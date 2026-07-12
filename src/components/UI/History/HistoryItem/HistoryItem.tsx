@@ -1,29 +1,27 @@
 import { getHistory } from '@/services/getHistory.service'
 import { getReview } from '@/services/getReview.service'
 import { getLanguageColor } from '@/utils/getLanguageColor'
-import { getSeverityStyles } from '@/utils/getSeverityStyles'
 import { ScoreCircle } from '@/utils/ScoreCircle'
 import {
 	Calendar,
 	FileCode,
-	Sparkles,
 	Terminal
 } from 'lucide-react'
 import { CodeDiffViewer } from './CodeDiffViewer'
+import { IssuesList } from './IssuesList'
 import { NoReview } from './NoReview'
 interface HistoryItemProps {
-	id: string
+	reviewId: string
 }
 
-export async function HistoryItem({ id }: HistoryItemProps) {
-	const review = await getReview(id)
+export async function HistoryItem({ reviewId }: HistoryItemProps) {
+	const review = await getReview(reviewId)
+	const { reviewer } = await getHistory({ id: reviewId })
 
 	if (!review) {
-		return <NoReview id={id} />
+		return <NoReview id={reviewId} />
 	}
-	const { historyList } = await getHistory(1)
-	const personaData = historyList.find(item => item.reviewId === id)?.Persona
-	const reviewer = personaData ? personaData.name : 'Unknown Persona'
+
 	return (
 		<div className="text-slate-200 font-sans space-y-6 max-w-6xl mx-auto p-4">
 
@@ -70,49 +68,10 @@ export async function HistoryItem({ id }: HistoryItemProps) {
 				</h2>
 
 				{review.issues?.length > 0 ? (
-					review.issues.map((issue) => {
-						const styles = getSeverityStyles(issue.severity)
-						return (
-							<div
-								key={issue.id}
-								className="bg-slate-900/30 border border-slate-800/60 rounded-xl overflow-hidden backdrop-blur-sm"
-							>
-								<div className="flex items-center justify-between px-5 py-3 bg-slate-900/50 border-b border-slate-800/40">
-									<div className="flex items-center gap-2.5">
-										{styles?.icon}
-										<span className={`text-[11px] font-mono font-semibold px-2 py-0.5 rounded border ${styles?.bg}`}>
-											{styles?.label}
-										</span>
-										{issue.lineNumber && (
-											<span className="text-xs text-slate-500 font-mono">
-												Строка: <span className="text-slate-300 font-bold">{issue.lineNumber}</span>
-											</span>
-										)}
-									</div>
-								</div>
-
-								<div className="p-5 space-y-4">
-									<div>
-										<h4 className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Что не так:</h4>
-										<p className="text-sm text-slate-200 leading-relaxed">{issue.message}</p>
-									</div>
-
-									<div className="bg-slate-950/80 border border-slate-850 rounded-lg p-4 font-mono text-xs text-slate-300 space-y-2">
-										<div className="flex items-center gap-1.5 text-emerald-400 font-sans text-xs font-semibold mb-1">
-											<Sparkles className="h-3.5 w-3.5" />
-											<span>Решение от Синьора:</span>
-										</div>
-										<pre className="whitespace-pre-wrap text-slate-400 bg-slate-900/50 p-3 rounded border border-slate-800/40 overflow-x-auto">
-											<code>{issue.suggestion}</code>
-										</pre>
-									</div>
-								</div>
-							</div>
-						)
-					})
+					<IssuesList issues={review.issues} />
 				) : (
 					<div className="text-sm text-slate-500 bg-slate-900/20 border border-slate-800 border-dashed rounded-xl p-8 text-center">
-						Замечаний нет. Либо код идеален, либо Синьор подобрел.
+						Замечаний нет. Либо код идеален, либо ревьюер подобрел.
 					</div>
 				)}
 			</div>

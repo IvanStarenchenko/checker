@@ -8,7 +8,7 @@ const MINIMUM_PASSING_SCORE = 50
 const MAX_SCORE = 100
 
 export async function getDashboardStatistics(): Promise<IDashboardStats> {
-	const { historyList } = (await getHistory()) as {
+	const { historyList } = (await getHistory()) as unknown as {
 		historyList: IHistoryWithPersona[]
 	}
 

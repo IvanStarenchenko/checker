@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+🤖 AI Code Reviewer AI Code Reviewer is an interactive web platform designed for
+automated code auditing, analysis, and review using Artificial Intelligence. The
+system analyzes uploaded files, identifies bugs across varying severity levels,
+calculates an overall quality Score, and generates optimized code suggestions. A
+distinct feature is the gamification of the process: reviews are conducted by
+various "AI Personas" (e.g., Nitpicker Senior), each possessing a unique tone,
+communication style, and level of strictness.
 
-## Getting Started
+🚀 Key Features Comprehensive AI Audit: Automated code quality assessment
+(Scoring), generation of a concise summary verdict, and detailed bug breakdowns.
 
-First, run the development server:
+Smart Contextual Binding (Issues Tracking): Display of identified issues grouped
+by severity (Critical, Warning, Suggestion), with precise source code line
+numbers and actionable fix recommendations.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Interactive Code Diff Viewer: A custom split-screen interface for comparing
+"Before" and "After" code versions. The UI architecture allows one panel to
+occupy 95% of the screen width while the other remains at 5% as a collapsed tab,
+allowing for instant, smooth swapping between versions on click.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Atomic Copying: An integrated system to copy source or fixed code in a single
+click, featuring instant visual feedback and DOM event isolation
+(stopPropagation).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Data Resilience: Robust parsing and validation of incoming metadata (including
+handling corrupted JSON strings within the DB) with automatic fallback states
+for the UI.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Review History: A dynamic feed of recent reviews utilizing precise data fetching
+based on relational database connections.
 
-## Learn More
+🛠 Tech Stack Frontend: Next.js (App Router), React, TypeScript, Tailwind CSS,
+Lucide React.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Backend & DB: Node.js, Drizzle ORM, SQLite.

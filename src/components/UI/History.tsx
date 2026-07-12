@@ -9,7 +9,7 @@ interface HistoryProps {
 }
 
 export async function HistoryList({ count = 5, isHat = true }: HistoryProps) {
-	const { historyList } = await getHistory(count)
+	const { historyList } = await getHistory({ count })
 	if (!historyList || historyList.length === 0) {
 		return (
 			<div className="w-full bg-[var(--light-bright)] border border-slate-800 rounded-xl overflow-hidden backdrop-blur-sm">

@@ -1,21 +1,31 @@
-// src/services/history.service.ts
 import { PERSONAS } from '@/Data/Personas.data'
 import { db } from '@/db'
 import { history as historyTable } from '@/db/schema'
 import type { IHistoryState } from '@/interfaces/History.interface'
-import { desc } from 'drizzle-orm'
+import { desc, eq } from 'drizzle-orm'
 
-export async function getHistory(count: number = 5) {
-	const rawHistory = await db
-		.select()
-		.from(historyTable)
-		.orderBy(desc(historyTable.createdAt))
-		.limit(count)
+interface GetHistoryParams {
+	id?: string
+	count?: number
+}
+
+export async function getHistory({ id, count = 5 }: GetHistoryParams = {}) {
+	let query = db.select().from(historyTable)
+
+	if (id) {
+		// @ts-ignore
+		query = query.where(eq(historyTable.reviewId, id))
+	} else {
+		// @ts-ignore
+		query = query.orderBy(desc(historyTable.createdAt)).limit(count)
+	}
+
+	const rawHistory = await query
 
 	const historyList: IHistoryState[] = rawHistory.map(item => {
 		let cleanPersonaId = item.personaId
 
-		if (cleanPersonaId.startsWith('{')) {
+		if (cleanPersonaId && cleanPersonaId.startsWith('{')) {
 			try {
 				const parsed = JSON.parse(cleanPersonaId)
 				cleanPersonaId = parsed.id || cleanPersonaId
@@ -40,5 +50,9 @@ export async function getHistory(count: number = 5) {
 		}
 	})
 
-	return { historyList }
+	const targetItem = id ? historyList.find(item => item.reviewId === id) : null
+
+	const reviewer = targetItem?.Persona?.name ?? 'Unknown Persona'
+
+	return { historyList, reviewer }
 }

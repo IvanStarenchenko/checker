@@ -1,7 +1,8 @@
 "use client"
 
+import { useCopyToClipboard } from '@/hooks/useCopyToClipboard'
 import { Check, Copy } from 'lucide-react'
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 interface CodeDiffViewerProps {
 	codeBefore: string
@@ -10,18 +11,7 @@ interface CodeDiffViewerProps {
 
 export function CodeDiffViewer({ codeBefore, codeAfter }: CodeDiffViewerProps) {
 	const [activeSide, setActiveSide] = useState<'before' | 'after'>('before')
-	const [copiedSide, setCopiedSide] = useState<'before' | 'after' | null>(null)
-
-	const handleCopy = async (e: React.MouseEvent, code: string, side: 'before' | 'after') => {
-		e.stopPropagation()
-		try {
-			await navigator.clipboard.writeText(code)
-			setCopiedSide(side)
-			setTimeout(() => setCopiedSide(null), 2000)
-		} catch (err) {
-			console.error('Не удалось скопировать код:', err)
-		}
-	}
+	const { copiedId, copy } = useCopyToClipboard()
 
 	return (
 		<div className="flex gap-4 pt-4 w-full min-h-[600px] select-none items-stretch">
@@ -30,8 +20,8 @@ export function CodeDiffViewer({ codeBefore, codeAfter }: CodeDiffViewerProps) {
 				onClick={() => setActiveSide('before')}
 				style={{ width: activeSide === 'before' ? '95%' : '5%' }}
 				className={`bg-slate-900/20 border border-slate-800/80 rounded-xl overflow-hidden flex flex-col transition-all duration-500 ease-in-out origin-left ${activeSide === 'after'
-						? 'cursor-pointer hover:border-rose-500/30 hover:bg-rose-500/[0.02]'
-						: ''
+					? 'cursor-pointer hover:border-rose-500/30 hover:bg-rose-500/[0.02]'
+					: ''
 					}`}
 			>
 				<div className={`px-4 py-2.5 bg-rose-500/5 border-b border-slate-800 flex items-center transition-all ${activeSide === 'before' ? 'justify-between' : 'justify-center py-4'
@@ -43,11 +33,11 @@ export function CodeDiffViewer({ codeBefore, codeAfter }: CodeDiffViewerProps) {
 							</span>
 
 							<button
-								onClick={(e) => handleCopy(e, codeBefore, 'before')}
+								onClick={() => copy(codeBefore, 'before')}
 								className="flex items-center gap-1.5 px-2 py-1 rounded bg-slate-950 border border-slate-800 text-[11px] font-sans text-slate-400 hover:text-slate-200 hover:border-slate-700 transition-colors"
 								title="Скопировать исходный код"
 							>
-								{copiedSide === 'before' ? (
+								{copiedId === 'before' ? (
 									<>
 										<Check className="h-3 w-3 text-emerald-400" />
 										<span className="text-emerald-400 font-medium">Скопировано!</span>
@@ -78,8 +68,8 @@ export function CodeDiffViewer({ codeBefore, codeAfter }: CodeDiffViewerProps) {
 				onClick={() => setActiveSide('after')}
 				style={{ width: activeSide === 'after' ? '95%' : '5%' }}
 				className={`bg-slate-900/20 border border-slate-800/80 rounded-xl overflow-hidden flex flex-col transition-all duration-500 ease-in-out origin-right ${activeSide === 'before'
-						? 'cursor-pointer hover:border-emerald-500/30 hover:bg-emerald-500/[0.02]'
-						: ''
+					? 'cursor-pointer hover:border-emerald-500/30 hover:bg-emerald-500/[0.02]'
+					: ''
 					}`}
 			>
 				{/* Шапка */}
@@ -92,11 +82,11 @@ export function CodeDiffViewer({ codeBefore, codeAfter }: CodeDiffViewerProps) {
 							</span>
 
 							<button
-								onClick={(e) => handleCopy(e, codeAfter, 'after')}
+								onClick={() => copy(codeAfter, 'after')}
 								className="flex items-center gap-1.5 px-2 py-1 rounded bg-slate-950 border border-slate-800 text-[11px] font-sans text-slate-400 hover:text-slate-200 hover:border-slate-700 transition-colors"
 								title="Скопировать исправленный код"
 							>
-								{copiedSide === 'after' ? (
+								{copiedId === 'after' ? (
 									<>
 										<Check className="h-3 w-3 text-emerald-400" />
 										<span className="text-emerald-400 font-medium">Скопировано!</span>

@@ -19,12 +19,14 @@ export function ReviewDisplay({ reviewId, review, detectedIssues, persona, addHi
 	useEffect(() => {
 		if (reviewId && review) {
 			addHistory({
+				reviewId: reviewId,
 				id: reviewId,
 				filePath: review.filePath,
 				Persona: persona,
 				score: review.score,
 				language: review.language as TCodeLanguage,
 				date: new Date()
+
 			})
 		}
 	}, [reviewId, review, persona, addHistory])
